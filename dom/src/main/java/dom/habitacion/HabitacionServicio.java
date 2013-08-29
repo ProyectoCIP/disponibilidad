@@ -3,26 +3,23 @@ package dom.habitacion;
 import java.util.List;
 
 import org.apache.isis.applib.AbstractFactoryAndRepository;
-import org.apache.isis.applib.annotation.Disabled;
 import org.apache.isis.applib.annotation.Hidden;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Named;
-import org.apache.isis.applib.annotation.Optional;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.RegEx;
-import org.apache.isis.applib.clock.Clock;
 import org.apache.isis.applib.filter.Filter;
-import org.joda.time.LocalDate;
 
 import com.google.common.base.Objects;
 
 import dom.habitacion.Habitacion;
-import dom.todo.ToDoItem;
 
 @Named("Habitaciones")
 public class HabitacionServicio extends AbstractFactoryAndRepository {
 	
 	@MemberOrder(sequence = "1")
-    public Habitacion NuevaHabitacion(
+	@Named("Nueva Habitación")
+    public Habitacion nueva(
             @RegEx(validation = "\\w[@&:\\-\\,\\.\\+ \\w]*") // words, spaces and selected punctuation
             @Named("Nombre") String nombre
         ) {
@@ -30,11 +27,23 @@ public class HabitacionServicio extends AbstractFactoryAndRepository {
         return nuevaHabitacion(nombre, usuario);
     }
 	
-	/*public LocalDate default2NewToDo() {
-        return new LocalDate(Clock.getTime()).plusDays(14);
-    }*/
-    // }}
-	@Hidden // for use by fixtures
+	@MemberOrder(sequence = "2")
+	@Named("Listar Habitaciones")
+	public List<Habitacion> listaHabitaciones() {
+		List<Habitacion> habitaciones = traerTodas();
+			if(habitaciones.isEmpty()) {
+				getContainer().informUser("Aún no existen habitaciones cargadas");
+			}
+		return habitaciones;
+	}
+	
+	@Programmatic
+	public List<Habitacion> traerTodas() {
+            final List<Habitacion> habitaciones = allMatches(Habitacion.class, Habitacion.creadosPor(usuarioActual()));
+            return habitaciones;
+	}
+
+	@Hidden
     public Habitacion nuevaHabitacion(
             final String nombre, 
             final String usuario
@@ -57,7 +66,6 @@ public class HabitacionServicio extends AbstractFactoryAndRepository {
     }
     // }}
     
-    //{{ autoComplete (hidden)
     @Hidden
     public List<Habitacion> completarHabitaciones(final String nombre) {
         return allMatches(Habitacion.class, new Filter<Habitacion>() {
@@ -68,6 +76,9 @@ public class HabitacionServicio extends AbstractFactoryAndRepository {
 
         });
     }
-    // }}
+    
+    protected String usuarioActual() {
+        return getContainer().getUser().getName();
+    }
 
 }

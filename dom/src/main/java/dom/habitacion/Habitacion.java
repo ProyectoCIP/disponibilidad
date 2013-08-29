@@ -21,18 +21,17 @@ import org.joda.time.LocalDate;
 import com.google.common.base.Objects;
 @javax.jdo.annotations.PersistenceCapable(identityType=IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy=javax.jdo.annotations.IdGeneratorStrategy.IDENTITY)
-@javax.jdo.annotations.Queries( {
-    @javax.jdo.annotations.Query(
-            name="habitacion_estados", language="JDOQL",  
-            value="SELECT FROM dom.habitacion.Habitacion WHERE estado == :estado and fecha == :fecha orderBy fecha")
-    })
+@javax.jdo.annotations.Queries({
+	@javax.jdo.annotations.Query(
+        name="habitacion_todas", language="JDOQL",
+        value="SELECT FROM dom.habitacion.Habitacion WHERE ownedBy == :ownedBy"),
+	@javax.jdo.annotations.Query(
+            name="habitacion_id", language="JDOQL",
+            value="SELECT FROM dom.habitacion.Habitacion WHERE id == :id")
+})
 @javax.jdo.annotations.Version(strategy=VersionStrategy.VERSION_NUMBER, column="VERSION")
-//@javax.jdo.annotations.Unique(name="ToDoItem_description_must_be_unique", members={"ownedBy","description"})
 @ObjectType("HABITACION")
 @Audited
-//@PublishedObject(ToDoItemChangedPayloadFactory.class)
-//@AutoComplete(repository=.class, action="autoComplete")
-@Bookmarkable
 public class Habitacion {
 	
 	//ID de la habitacion
@@ -47,6 +46,10 @@ public class Habitacion {
 		this.id = id;
 	}
 	
+	public String iconName() {
+		return "Habitacion";
+	}
+	
 	//Nombre de la habitacion
 	private String nombre;
 
@@ -57,7 +60,7 @@ public class Habitacion {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}	
+	}
 
     public static Filter<Habitacion> creadosPor(final String usuarioActual) {
         return new Filter<Habitacion>() {
@@ -66,7 +69,21 @@ public class Habitacion {
                 return Objects.equal(habitacion.getUsuario(), usuarioActual);
             }
         };
-    }    
+    }   
+    
+    /*
+     * Frigobar para las habitaciones
+     * 
+    private Frigobar frigobar;
+    
+    public Frigobar getFrigobar() {
+    	return frigobar;
+    }
+    
+    public void setFrigobar(Frigobar frigobar) {
+    	this.frigobar = frigobar;
+    }
+    */
 
     // {{ OwnedBy (property)
     private String usuario;
@@ -87,6 +104,5 @@ public class Habitacion {
     public void injectDomainObjectContainer(final DomainObjectContainer container) {
         this.container = container;
     }
-	
 	
 }

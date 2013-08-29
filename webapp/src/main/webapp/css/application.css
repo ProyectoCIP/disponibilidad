@@ -20,13 +20,15 @@
 /*
 uncomment to add a logo (in an ../images directory relative to this file)
 
+
+*/
+
 #header {
-    height: 12px;
+    height: 2px;
     background-image: url("../images/logo.png");
-	background-repeat: no-repeat;
+	background-repeat: repeat;
 }
 
 #header h1 {
 	display: none;
 }
-*/
