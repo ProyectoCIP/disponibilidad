@@ -7,18 +7,23 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Audited;
 import org.apache.isis.applib.annotation.AutoComplete;
 import org.apache.isis.applib.annotation.Bookmarkable;
+import org.apache.isis.applib.annotation.Bulk;
 import org.apache.isis.applib.annotation.Hidden;
 import org.apache.isis.applib.annotation.MemberGroups;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Named;
 import org.apache.isis.applib.annotation.NotPersisted;
 import org.apache.isis.applib.annotation.ObjectType;
 import org.apache.isis.applib.annotation.Optional;
+import org.apache.isis.applib.annotation.PublishedAction;
 import org.apache.isis.applib.annotation.PublishedObject;
 import org.apache.isis.applib.annotation.Title;
 import org.apache.isis.applib.filter.Filter;
 import org.joda.time.LocalDate;
 
 import com.google.common.base.Objects;
+
+import dom.todo.ToDoItem;
 @javax.jdo.annotations.PersistenceCapable(identityType=IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy=javax.jdo.annotations.IdGeneratorStrategy.IDENTITY)
 @javax.jdo.annotations.Queries({
@@ -84,6 +89,30 @@ public class Habitacion {
     	this.frigobar = frigobar;
     }
     */
+    @Named("Done")
+    @PublishedAction
+    @Bulk
+    @MemberOrder(name="complete", sequence = "1")
+    public void completed() {
+        container.warnUser("Sisisi");
+    }
+    // disable action dependent on state of object
+    //public String disableCompleted() {
+    //    return complete ? "Already completed" : null;
+    //}
+
+
+    @Named("Undo")
+    @PublishedAction
+    @MemberOrder(name="complete", sequence = "2")
+    public void notYetCompleted() {
+    	container.warnUser("Nonono");
+    }
+    // disable action dependent on state of object
+    //public String disableNotYetCompleted() {
+      //  return !complete ? "Not yet completed" : null;
+    //}
+    // }}
 
     // {{ OwnedBy (property)
     private String usuario;
