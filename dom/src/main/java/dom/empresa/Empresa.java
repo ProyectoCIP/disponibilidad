@@ -132,6 +132,7 @@ public class Empresa {
 	/*
 	 * Listado de huéspedes que tiene esta empresa
 	
+	@Persistent(mappedBy="empresa")
 	private List<Huesped> listaHuespedes;
 	
 	public List<Huesped> getListaHuespedes() {
@@ -141,6 +142,15 @@ public class Empresa {
 	public void setListaHuespedes() {
 		this.listaHuespedes = listaHuespedes;
 	}
+	
+	@Hidden
+    public void addToHuesped(Huesped huesped) {
+        if(huesped == null || huespedes.contains(huesped)) {
+          return;
+        }
+        huesped.setEmpresa(this);
+        huespedes.add(huesped);
+    }
 	
 	*/
 	
